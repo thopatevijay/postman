@@ -18,10 +18,15 @@ type UseLetterResult = {
     handleChange: (changedValues: any, allValues: any) => void;
     handleSubmit: (values: GenerateFormValues) => void;
     sendLetter: () => void;
+    isGenerating: boolean;
+    isLetterGenerated: boolean;
 };
 
 export function useGenerateLetter(): UseLetterResult {
     const [generatedContent, setGeneratedContent] = useState("");
+    const [isGenerating, setIsGenerating] = useState(false);
+    const [isLetterGenerated, setIsLetterGenerated] = useState(false);
+
     const [form] = Form.useForm<GenerateFormValues>();
 
     const handleChange = useCallback(
@@ -38,7 +43,7 @@ export function useGenerateLetter(): UseLetterResult {
             The subject of my letter is: ${values.subject}.
             Be respectful and professional in tone.
             Do not include any variables or brackets, like [Your Name] or [Date]. Start your reply with the salutation, like "Dear...".
-            The letter should be well-written, clear, and short (about 300 words).
+            The letter should be well-written, clear, and short (about 250 words).
         `;
             return prompt;
         },
@@ -46,6 +51,8 @@ export function useGenerateLetter(): UseLetterResult {
     );
 
     const generateLetter = useCallback(async (prompt) => {
+        setIsGenerating(true);
+
         const openai = new ChatGPTAPI({
             apiKey: process.env.CHATGPT_KEY,
             completionParams: CHAT_GPT_COMPLETION_PARAMS,
@@ -58,16 +65,18 @@ export function useGenerateLetter(): UseLetterResult {
                     setGeneratedContent(partialResponse.text);
                 },
             });
+            setIsGenerating(false);
 
+            setIsLetterGenerated(true);
         } catch (err) {
             console.log(err);
+            setIsGenerating(false);
         }
     }, [setGeneratedContent]);
 
     const sendLetter = useCallback(async () => {
-     
+
         const values = form.getFieldsValue();
-        console.log(values);
         const to = {
             firstName: values.receiverName,
             lastName: '',
@@ -100,18 +109,20 @@ export function useGenerateLetter(): UseLetterResult {
                 },
                 body: JSON.stringify({ to, from, description, content }),
             });
-    
+
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'Error sending letter');
             }
-    
-            const data = await response.json();
+
+            await response.json();
             message.success('Letter sent successfully!');
-            console.log(data);
+            setGeneratedContent("");
+            setIsLetterGenerated(false);
+            setIsGenerating(false);
         } catch (error) {
             console.error(error);
-            message.error(error.message); // Display the error to the user.
+            message.error(error.message);
         }
 
     }, [form, generatedContent]);
@@ -119,9 +130,7 @@ export function useGenerateLetter(): UseLetterResult {
 
     const handleSubmit = useCallback(
         async (values: GenerateFormValues) => {
-            console.log(values)
             const prompt = getChatGptPrompt(values);
-            console.log(prompt)
 
             generateLetter(prompt);
         },
@@ -134,6 +143,8 @@ export function useGenerateLetter(): UseLetterResult {
         handleChange,
         handleSubmit,
         form,
-        sendLetter
+        sendLetter,
+        isLetterGenerated,
+        isGenerating,
     };
 }

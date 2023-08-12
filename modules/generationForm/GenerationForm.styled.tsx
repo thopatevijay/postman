@@ -22,15 +22,26 @@ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
   "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 word-break: break-all;
 font-size: 10px;
-width: 50%;
-
+background-color: whitesmoke;
 `;
 
 export const MainContainer = styled.div`
 display: flex;
 padding: 33px;
 justify-content: space-between;
-align-items: center;
+align-items: flex-start;
+// background: yellowgreen;
+    height: 80vh;
+    gap: 80px;
+
 `;
 
 export const SendLetterButton = styled(Button)``;
+
+export const FormContainer = styled.div`
+width: 50%;
+`;
+
+export const LetterContentContainer = styled.div`
+width: 50%;
+`;
