@@ -5,7 +5,7 @@ import * as Styled from "./GenerationForm.styled";
 
 const GenerationForm = () => {
 
-  const { generatedContent, handleChange, handleSubmit, form } = useGenerateLetter();
+  const { generatedContent, handleChange, handleSubmit, form, sendLetter } = useGenerateLetter();
 
   return (
     <Styled.MainContainer>
@@ -51,7 +51,7 @@ const GenerationForm = () => {
 
         <Form.Item>
           <Space>
-            <Button type="primary" htmlType="submit" >
+            <Button type="link" htmlType="submit" >
               Generate
             </Button>
           </Space>
@@ -61,6 +61,9 @@ const GenerationForm = () => {
       <Styled.LetterContentHolder>
         {generatedContent}
       </Styled.LetterContentHolder>
+      <Styled.SendLetterButton type="link" onClick={sendLetter}>
+        Send Letter
+      </Styled.SendLetterButton>
     </Styled.MainContainer>
 
   )

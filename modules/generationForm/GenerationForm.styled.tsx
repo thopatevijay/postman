@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import {
   Input as UiInput,
   Form as UiForm,
+  Button,
 } from 'antd';
 
 export const Form = styled(UiForm)``;
@@ -31,3 +32,5 @@ padding: 33px;
 justify-content: space-between;
 align-items: center;
 `;
+
+export const SendLetterButton = styled(Button)``;
