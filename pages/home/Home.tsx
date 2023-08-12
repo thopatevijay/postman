@@ -2,10 +2,12 @@ import React from 'react';
 import * as Styled from './Home.styled';
 import type { TabsProps } from 'antd';
 import GenerationForm from '../../modules/generationForm';
-
+import { useWalletContext } from '../../common/WalletProvider';
 
 const Home = () => {
+  const { metaMask, connectToMetaMask } = useWalletContext();
 
+  console.log(metaMask);
   const onChange = (key: string) => {
     console.log(key);
   };
@@ -22,9 +24,12 @@ const Home = () => {
       children: `Content of Tab Pane 2`,
     },
   ];
-  
+
   return (
     <Styled.MainContainer>
+      <Styled.ConnectWalletButton type="primary" onClick={connectToMetaMask}>
+        {metaMask.isConnected ? "Wallet connected" : "Connect wallet"}
+      </Styled.ConnectWalletButton>
       <Styled.Tabs defaultActiveKey="1" items={items} onChange={onChange} />
     </Styled.MainContainer>
   )
