@@ -1,0 +1,114 @@
+{
+  "CONTRACT_NAME": "LetterStore",
+  "CONTRACT_ADDRESS": "0xaE3F8c0b802Da72DB8a97b9EcAE536F8Af51a5df",
+  "DEPLOYER_ADDRESS": "0xc14f4F5117e3adC5d4831937e43b7484a860aE17",
+  "ABI": [
+    {
+      "type": "constructor",
+      "payable": false,
+      "inputs": []
+    },
+    {
+      "type": "event",
+      "anonymous": false,
+      "name": "LetterStored",
+      "inputs": [
+        {
+          "type": "address",
+          "name": "_from",
+          "indexed": true
+        },
+        {
+          "type": "string",
+          "name": "_letterURL",
+          "indexed": false
+        },
+        {
+          "type": "uint256",
+          "name": "_timestamp",
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "LETTER_FEE",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [
+        {
+          "type": "uint256"
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getLetters",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "address",
+          "name": "_address"
+        }
+      ],
+      "outputs": [
+        {
+          "type": "tuple[]",
+          "components": [
+            {
+              "type": "address",
+              "name": "sender"
+            },
+            {
+              "type": "string",
+              "name": "letterURL"
+            },
+            {
+              "type": "uint256",
+              "name": "timestamp"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "owner",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [
+        {
+          "type": "address"
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "storeLetter",
+      "constant": false,
+      "stateMutability": "payable",
+      "payable": true,
+      "inputs": [
+        {
+          "type": "string",
+          "name": "_letterURL"
+        }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "withdraw",
+      "constant": false,
+      "payable": false,
+      "inputs": [],
+      "outputs": []
+    }
+  ]
+}
