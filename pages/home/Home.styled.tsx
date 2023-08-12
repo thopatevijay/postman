@@ -1,5 +1,9 @@
 import styled from 'styled-components'
-import { Button as UiButton } from 'antd';
+import { Tabs as UiTabs } from 'antd';
 
+export const MainContainer = styled.div`
+height: 100vh;
+padding: 60px;
+`;
 
-export const Button = styled(UiButton)``;
+export const Tabs = styled(UiTabs)``;
