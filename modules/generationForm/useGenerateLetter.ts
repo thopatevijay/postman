@@ -4,6 +4,7 @@ import { Form, FormInstance, message } from "antd";
 import { CHAT_GPT_COMPLETION_PARAMS, CHAT_GPT_SYSTEM_MESSAGE } from "../../common/constant";
 import { useContract } from "../../common/hooks/contract";
 import { ethers } from "ethers";
+import { useWalletContext } from "../../common/WalletProvider";
 
 type GenerateFormValues = {
     senderName: string;
@@ -31,6 +32,7 @@ export function useGenerateLetter(): UseLetterResult {
     const [isLetterGenerated, setIsLetterGenerated] = useState(false);
     const [userMessage, setUserMessage] = useState("");
     const { contract } = useContract();
+    const { metaMask } = useWalletContext();
 
     const [form] = Form.useForm<GenerateFormValues>();
 
@@ -115,7 +117,7 @@ export function useGenerateLetter(): UseLetterResult {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ to, from, description, content }),
+                body: JSON.stringify({ to, from, description, content, walletAddress: metaMask?.selectedAddress }),
             });
 
             if (!response.ok) {
@@ -137,7 +139,7 @@ export function useGenerateLetter(): UseLetterResult {
             setUserMessage("Error sending letter");
         }
 
-    }, [form, generatedContent]);
+    }, [form, generatedContent, metaMask?.selectedAddress]);
 
     const triggerPayFee = useCallback(async () => {
         try {

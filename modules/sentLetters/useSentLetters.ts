@@ -1,11 +1,7 @@
 import { useState, useCallback, useEffect } from "react";
-import { ChatGPTAPI } from 'chatgpt'
-import { Form, FormInstance, message } from "antd";
-import { CHAT_GPT_COMPLETION_PARAMS, CHAT_GPT_SYSTEM_MESSAGE } from "../../common/constant";
-import { useContract } from "../../common/hooks/contract";
-import { ethers } from "ethers";
+import { message } from "antd";
 import { useWalletContext } from "../../common/WalletProvider";
-import { use } from "chai";
+import { useContract } from "../../common/hooks/contract";
 
 type UseSentLetterResult = {
     letters: any;
@@ -17,23 +13,24 @@ export function useSentLetters(): UseSentLetterResult {
     const { contract } = useContract();
 
     const getLettersFromContract = useCallback(async () => {
+        const searchQuery = encodeURIComponent(
+            JSON.stringify({
+                "metadata.walletAddress": metaMask?.selectedAddress,
+            })
+        );
+
         try {
-            if (!contract) throw new Error("Contract not loaded");
-
-            const letters = await contract.getLetters(metaMask?.selectedAddress);
-
-
-            const processLetters = letters.map(entry => ({
-                url: entry.letterURL,
-                time: new Date(entry.timestamp.toNumber() * 1000).toLocaleString()
-            }));
-            return processLetters;
-
+            const getLetters = await fetch(`/api/postGrid/getLetters?searchQuery=${searchQuery}`);
+            if (!getLetters.ok) {
+                throw new Error("Error getting letter");
+            }
+            const { data } = await getLetters.json();
+            return data;
         } catch (error) {
             console.error("Error fetching the letters:", error);
             message.error(`Failed to retrieve letters: ${error.message}`);
         }
-    }, [contract, metaMask?.selectedAddress]);
+    }, [metaMask?.selectedAddress]);
 
     const getLetters = useCallback(async () => {
         const letterData = await getLettersFromContract();
@@ -42,9 +39,15 @@ export function useSentLetters(): UseSentLetterResult {
 
     useEffect(() => {
         getLetters();
-    }, [getLetters]);
+
+        contract.on("FeeReceived", () =>  getLetters());
+
+        return () => {
+            contract.off("FeeReceived", () => getLetters());
+        };
+    }, [getLetters, contract]);
 
     return {
-        letters
+        letters,
     };
 }

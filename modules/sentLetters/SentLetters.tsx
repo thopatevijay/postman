@@ -11,11 +11,12 @@ const SentLetters = () => {
             <Styled.List
                 itemLayout="horizontal"
                 dataSource={letters}
-                renderItem={(item, index) => (
+                renderItem={(item: { url: string, description: string, to: { firstName: string } }, index) => (
                     <Styled.ListItem>
                         <Styled.ListItemMeta
                             avatar={<Styled.Avatar src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${index}`} />}
-                            title={<a target='_blank' rel="noopener noreferrer" href={`https://pg-prod-bucket-1.s3.amazonaws.com/test/${item.url}`}>{item.time}</a>}
+                            title={<a target='_blank' rel="noopener noreferrer" href={item.url}>{item.description}</a>}
+                            description={`Letter sent to ${item.to.firstName}`}
                         />
                     </Styled.ListItem>
                 )}

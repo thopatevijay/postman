@@ -13,6 +13,7 @@ interface IRequestBody {
     from: IContact;
     description: string;
     content: string;
+    walletAddress: string;
 }
 
 export default async function sendLetter(
@@ -20,7 +21,7 @@ export default async function sendLetter(
     response: NextApiResponse
 ): Promise<void> {
     try {
-        const { to, from, description, content } = request.body as IRequestBody;
+        const { to, from, description, content, walletAddress } = request.body as IRequestBody;
         const rightNow = new Date().toDateString();
 
         // Sending the letter
@@ -40,6 +41,9 @@ export default async function sendLetter(
                 mergeVariables: {
                     "content": content,
                     "date": rightNow
+                },
+                metadata: {
+                    "walletAddress": walletAddress
                 }
             }),
         };
