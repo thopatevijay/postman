@@ -1,6 +1,6 @@
 {
-  "CONTRACT_NAME": "LetterStore",
-  "CONTRACT_ADDRESS": "0x65c99bf2e2f819808CA8201E37874e3eC0201e09",
+  "CONTRACT_NAME": "LetterFeeCollector",
+  "CONTRACT_ADDRESS": "0x1cCD0A4803C186Ad638021B6267d1a7c3fE2B2aD",
   "DEPLOYER_ADDRESS": "0x4B5c98c04428Bf110f87992269C6414Bbe960178",
   "ABI": [
     {
@@ -11,17 +11,12 @@
     {
       "type": "event",
       "anonymous": false,
-      "name": "LetterStored",
+      "name": "FeeReceived",
       "inputs": [
         {
           "type": "address",
           "name": "_from",
           "indexed": true
-        },
-        {
-          "type": "string",
-          "name": "_letterURL",
-          "indexed": false
         },
         {
           "type": "uint256",
@@ -45,38 +40,6 @@
     },
     {
       "type": "function",
-      "name": "getLetters",
-      "constant": true,
-      "stateMutability": "view",
-      "payable": false,
-      "inputs": [
-        {
-          "type": "address",
-          "name": "_address"
-        }
-      ],
-      "outputs": [
-        {
-          "type": "tuple[]",
-          "components": [
-            {
-              "type": "address",
-              "name": "sender"
-            },
-            {
-              "type": "string",
-              "name": "letterURL"
-            },
-            {
-              "type": "uint256",
-              "name": "timestamp"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "function",
       "name": "owner",
       "constant": true,
       "stateMutability": "view",
@@ -90,16 +53,11 @@
     },
     {
       "type": "function",
-      "name": "storeLetter",
+      "name": "payFee",
       "constant": false,
       "stateMutability": "payable",
       "payable": true,
-      "inputs": [
-        {
-          "type": "string",
-          "name": "_letterURL"
-        }
-      ],
+      "inputs": [],
       "outputs": []
     },
     {

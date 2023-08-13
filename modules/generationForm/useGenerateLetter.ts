@@ -80,32 +80,7 @@ export function useGenerateLetter(): UseLetterResult {
         }
     }, [setGeneratedContent]);
 
-    const storeLetterInContract = useCallback(async (letterURL: string) => {
-        try {
-            console.log("contract", letterURL);
-            setUserMessage("Storing letter in contract...");
 
-            if (!contract) throw new Error("Contract not loaded");
-
-            const transaction = await contract.storeLetter(letterURL, {
-                value: ethers.utils.parseEther("0.0000000001") // This is 0.1 Gwei in Wei
-            });
-
-            const receipt = await transaction.wait();
-
-            if (receipt.transactionHash) {
-                message.success(`Letter stored successfully!. Transaction hash: ${receipt.transactionHash}`);
-                setUserMessage("Letter stored successfully!");
-            }
-
-            console.log(`Transaction hash: ${receipt.transactionHash}`);
-
-        } catch (error) {
-            console.error("Error storing the letter:", error);
-            message.error(`Failed to store the letter: ${error.message}`);
-            setUserMessage("Failed to store the letter. Please try again.");
-        }
-    }, [contract]);
 
     const sendLetter = useCallback(async () => {
         setUserMessage("Letter is being sent...");
@@ -135,7 +110,7 @@ export function useGenerateLetter(): UseLetterResult {
         const content = generatedContent;
 
         try {
-            const response = await fetch("/api/postGrid/sendAndGetLetter", {
+            const response = await fetch("/api/postGrid/sendLetter", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -150,10 +125,7 @@ export function useGenerateLetter(): UseLetterResult {
 
             const data = await response.json();
             console.log(data);
-            if (data) {
-                storeLetterInContract(data.url);
-                setUserMessage("Letter is being stored in the contract...");
-            }
+        
 
             message.success('Letter sent successfully!');
             setGeneratedContent("");
@@ -165,8 +137,32 @@ export function useGenerateLetter(): UseLetterResult {
             setUserMessage("Error sending letter");
         }
 
-    }, [form, generatedContent, storeLetterInContract]);
+    }, [form, generatedContent]);
 
+    const triggerPayFee = useCallback(async () => {
+        try {
+            setUserMessage("Paying fee...");
+
+            if (!contract) throw new Error("Contract not loaded");
+
+            const transaction = await contract.payFee({value: ethers.utils.parseEther("0.0000000001")});
+
+            const receipt = await transaction.wait();
+
+            if (receipt.transactionHash) {
+                message.success(`Letter stored successfully!. Transaction hash: ${receipt.transactionHash}`);
+                setUserMessage("Letter stored successfully!");
+                sendLetter();
+            }
+
+            console.log(`Transaction hash: ${receipt.transactionHash}`);
+
+        } catch (error) {
+            console.error("Error storing the letter:", error);
+            message.error(`Failed to store the letter: ${error.message}`);
+            setUserMessage("Failed to store the letter. Please try again.");
+        }
+    }, [contract, sendLetter]);
 
     const handleSubmit = useCallback(
         async (values: GenerateFormValues) => {
@@ -182,7 +178,7 @@ export function useGenerateLetter(): UseLetterResult {
         handleChange,
         handleSubmit,
         form,
-        sendLetter,
+        sendLetter : triggerPayFee,
         isLetterGenerated,
         isGenerating,
         userMessage,

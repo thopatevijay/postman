@@ -15,7 +15,7 @@ interface IRequestBody {
     content: string;
 }
 
-export default async function sendAndGetLetter(
+export default async function sendLetter(
     request: NextApiRequest,
     response: NextApiResponse
 ): Promise<void> {
@@ -50,24 +50,7 @@ export default async function sendAndGetLetter(
             throw new Error('Error sending letter');
         }
 
-        await new Promise(res => setTimeout(res, 5000));
-
-        // Get the letter details using letter_id
-        const letterId = sendData.id;
-        const getOptions = {
-            method: 'GET',
-            headers: {
-                'X-API-KEY': process.env.POSTGRID_API_KEY,
-            }
-        };
-
-        const getRes = await fetch(`https://api.postgrid.com/print-mail/v1/letters/${letterId}?expand[]=template`, getOptions);
-        const getLetterData = await getRes.json();
-        if (!getRes.ok) {
-            throw new Error('Error retrieving letter details');
-        }
-
-        response.status(200).json(getLetterData);
+        response.status(200).json(sendData);
 
     } catch (error) {
         console.log(error);

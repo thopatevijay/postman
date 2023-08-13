@@ -5,18 +5,18 @@ async function main() {
   const [deployer] = await ethers.getSigners();
   console.log(`Deploying contracts with the account: ${deployer.address}`);
 
-  // Deploying the LetterStore contract
-  const LetterStore = await ethers.getContractFactory("LetterStore");
-  const letterStore = await LetterStore.connect(deployer).deploy();
+  // Deploying the LetterFeeCollector contract
+  const LetterFeeCollector = await ethers.getContractFactory("LetterFeeCollector");
+  const letterFeeCollector = await LetterFeeCollector.connect(deployer).deploy();
 
-  await letterStore.deployed();
-  console.log(`LetterStore deployed to: ${letterStore.address}`);
+  await letterFeeCollector.deployed();
+  console.log(`LetterFeeCollector deployed to: ${letterFeeCollector.address}`);
 
   let deployedDetails = {
-    CONTRACT_NAME: "LetterStore",
-    CONTRACT_ADDRESS: letterStore.address,
+    CONTRACT_NAME: "LetterFeeCollector",
+    CONTRACT_ADDRESS: letterFeeCollector.address,
     DEPLOYER_ADDRESS: deployer.address,
-    ABI: JSON.parse(letterStore.interface.format("json").toString())
+    ABI: JSON.parse(letterFeeCollector.interface.format("json").toString())
   }
 
   fs.writeFile("./contract-details.json", JSON.stringify(deployedDetails, null, 2), (err: any) => {
