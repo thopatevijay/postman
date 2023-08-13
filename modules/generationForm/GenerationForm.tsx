@@ -5,11 +5,12 @@ import * as Styled from "./GenerationForm.styled";
 
 const GenerationForm = () => {
 
-  const { generatedContent, handleChange, handleSubmit, form, sendLetter, isGenerating, isLetterGenerated } = useGenerateLetter();
+  const { generatedContent, handleChange, handleSubmit, form, sendLetter, isGenerating, isLetterGenerated, userMessage } = useGenerateLetter();
 
   return (
     <Styled.MainContainer>
       <Styled.FormContainer>
+      <Styled.UserMessage>{userMessage}</Styled.UserMessage>
         <Styled.Form
           form={form}
           onValuesChange={handleChange}

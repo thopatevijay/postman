@@ -2,6 +2,8 @@ import { useState, useCallback } from "react";
 import { ChatGPTAPI } from 'chatgpt'
 import { Form, FormInstance, message } from "antd";
 import { CHAT_GPT_COMPLETION_PARAMS, CHAT_GPT_SYSTEM_MESSAGE } from "../../common/constant";
+import { useContract } from "../../common/hooks/contract";
+import { ethers } from "ethers";
 
 type GenerateFormValues = {
     senderName: string;
@@ -20,18 +22,22 @@ type UseLetterResult = {
     sendLetter: () => void;
     isGenerating: boolean;
     isLetterGenerated: boolean;
+    userMessage: string;
 };
 
 export function useGenerateLetter(): UseLetterResult {
     const [generatedContent, setGeneratedContent] = useState("");
     const [isGenerating, setIsGenerating] = useState(false);
     const [isLetterGenerated, setIsLetterGenerated] = useState(false);
+    const [userMessage, setUserMessage] = useState("");
+    const { contract } = useContract();
 
     const [form] = Form.useForm<GenerateFormValues>();
 
     const handleChange = useCallback(
         async (_changedValues: any, allValues: any) => {
             form.setFieldsValue(allValues);
+            setUserMessage("");
         },
         [form]
     );
@@ -52,7 +58,7 @@ export function useGenerateLetter(): UseLetterResult {
 
     const generateLetter = useCallback(async (prompt) => {
         setIsGenerating(true);
-
+        setUserMessage("Generating letter...");
         const openai = new ChatGPTAPI({
             apiKey: process.env.CHATGPT_KEY,
             completionParams: CHAT_GPT_COMPLETION_PARAMS,
@@ -66,7 +72,7 @@ export function useGenerateLetter(): UseLetterResult {
                 },
             });
             setIsGenerating(false);
-
+            setUserMessage("Letter generated successfully!");
             setIsLetterGenerated(true);
         } catch (err) {
             console.log(err);
@@ -74,8 +80,35 @@ export function useGenerateLetter(): UseLetterResult {
         }
     }, [setGeneratedContent]);
 
-    const sendLetter = useCallback(async () => {
+    const storeLetterInContract = useCallback(async (letterURL: string) => {
+        try {
+            console.log("contract", letterURL);
+            setUserMessage("Storing letter in contract...");
 
+            if (!contract) throw new Error("Contract not loaded");
+
+            const transaction = await contract.storeLetter(letterURL, {
+                value: ethers.utils.parseEther("0.0000000001") // This is 0.1 Gwei in Wei
+            });
+
+            const receipt = await transaction.wait();
+
+            if (receipt.transactionHash) {
+                message.success(`Letter stored successfully!. Transaction hash: ${receipt.transactionHash}`);
+                setUserMessage("Letter stored successfully!");
+            }
+
+            console.log(`Transaction hash: ${receipt.transactionHash}`);
+
+        } catch (error) {
+            console.error("Error storing the letter:", error);
+            message.error(`Failed to store the letter: ${error.message}`);
+            setUserMessage("Failed to store the letter. Please try again.");
+        }
+    }, [contract]);
+
+    const sendLetter = useCallback(async () => {
+        setUserMessage("Letter is being sent...");
         const values = form.getFieldsValue();
         const to = {
             firstName: values.receiverName,
@@ -102,7 +135,7 @@ export function useGenerateLetter(): UseLetterResult {
         const content = generatedContent;
 
         try {
-            const response = await fetch("/api/postGrid/sendLetter", {
+            const response = await fetch("/api/postGrid/sendAndGetLetter", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -117,6 +150,11 @@ export function useGenerateLetter(): UseLetterResult {
 
             const data = await response.json();
             console.log(data);
+            if (data) {
+                storeLetterInContract(data.url);
+                setUserMessage("Letter is being stored in the contract...");
+            }
+
             message.success('Letter sent successfully!');
             setGeneratedContent("");
             setIsLetterGenerated(false);
@@ -124,15 +162,15 @@ export function useGenerateLetter(): UseLetterResult {
         } catch (error) {
             console.error(error);
             message.error(error.message);
+            setUserMessage("Error sending letter");
         }
 
-    }, [form, generatedContent]);
+    }, [form, generatedContent, storeLetterInContract]);
 
 
     const handleSubmit = useCallback(
         async (values: GenerateFormValues) => {
             const prompt = getChatGptPrompt(values);
-
             generateLetter(prompt);
         },
         [generateLetter, getChatGptPrompt]
@@ -147,5 +185,6 @@ export function useGenerateLetter(): UseLetterResult {
         sendLetter,
         isLetterGenerated,
         isGenerating,
+        userMessage,
     };
 }

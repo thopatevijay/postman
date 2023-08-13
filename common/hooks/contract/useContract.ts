@@ -1,7 +1,7 @@
 
 import { ethers } from "ethers";
 import { useMemo } from "react";
-import { ABI, CONTRACT_ADDRESS, DEPLOYER_ADDRESS } from "../../../contract-details.json";
+import { ABI, CONTRACT_ADDRESS } from "../../../contract-details.json";
 
 
 interface Window {

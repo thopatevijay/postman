@@ -45,3 +45,7 @@ width: 50%;
 export const LetterContentContainer = styled.div`
 width: 50%;
 `;
+
+export const UserMessage = styled.div`
+  margin-bottom: 24px;
+`;
