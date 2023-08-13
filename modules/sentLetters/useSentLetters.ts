@@ -13,14 +13,9 @@ export function useSentLetters(): UseSentLetterResult {
     const { contract } = useContract();
 
     const getLettersFromContract = useCallback(async () => {
-        const searchQuery = encodeURIComponent(
-            JSON.stringify({
-                "metadata.walletAddress": metaMask?.selectedAddress,
-            })
-        );
-
+        console.log("metaMask?.selectedAddress", metaMask?.selectedAddress)
         try {
-            const getLetters = await fetch(`/api/postGrid/getLetters?searchQuery=${searchQuery}`);
+            const getLetters = await fetch(`/api/postGrid/getLetters?searchQuery=${metaMask?.selectedAddress}`);
             if (!getLetters.ok) {
                 throw new Error("Error getting letter");
             }

@@ -15,7 +15,15 @@ export default async function sendLetter(
             }
         };
 
-        const lettersRes = await fetch(`https://api.postgrid.com/print-mail/v1/letters?search=${searchQuery}`, options);
+        const searchString = encodeURIComponent(
+            JSON.stringify({
+                metadata: {
+                    walletAddress: searchQuery,
+                },
+            })
+        );
+
+        const lettersRes = await fetch(`https://api.postgrid.com/print-mail/v1/letters?search=${searchString}`, options);
         const getData = await lettersRes.json();
         if (!lettersRes.ok) {
             throw new Error('Error sending letter');

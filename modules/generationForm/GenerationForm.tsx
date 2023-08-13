@@ -17,6 +17,7 @@ const GenerationForm = () => {
           onFinish={handleSubmit}
         >
           <Styled.FormItem
+           label="Sender Name"
             name="senderName"
             rules={[{ required: true, message: "Please input sender name!" }]}
           >
@@ -24,6 +25,7 @@ const GenerationForm = () => {
           </Styled.FormItem>
 
           <Styled.FormItem
+            label="Sender Address"
             name="senderAddress"
             rules={[{ required: true, message: "Please input sender address!" }]}
           >
@@ -31,6 +33,7 @@ const GenerationForm = () => {
           </Styled.FormItem>
 
           <Styled.FormItem
+            label="Receiver Name"
             name="receiverName"
             rules={[{ required: true, message: "Please input receiver name!" }]}
           >
@@ -38,6 +41,7 @@ const GenerationForm = () => {
           </Styled.FormItem>
 
           <Styled.FormItem
+            label="Receiver Address"
             name="receiverAddress"
             rules={[{ required: true, message: "Please input receiver address!" }]}
           >
@@ -45,6 +49,7 @@ const GenerationForm = () => {
           </Styled.FormItem>
 
           <Styled.FormItem
+            label="Subject"
             name="subject"
             rules={[{ required: true, message: "Please input letter subject!" }]}
           >
