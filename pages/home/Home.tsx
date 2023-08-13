@@ -3,6 +3,7 @@ import * as Styled from './Home.styled';
 import type { TabsProps } from 'antd';
 import GenerationForm from '../../modules/generationForm';
 import { useWalletContext } from '../../common/WalletProvider';
+import SentLetters from '../../modules/sentLetters';
 
 const Home = () => {
   const { metaMask, connectToMetaMask } = useWalletContext();
@@ -21,7 +22,7 @@ const Home = () => {
     {
       key: '2',
       label: `See sent Letter`,
-      children: `Content of Tab Pane 2`,
+      children: <SentLetters />,
     },
   ];
 
