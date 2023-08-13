@@ -32,7 +32,7 @@ export function useGenerateLetter(): UseLetterResult {
     const [isLetterGenerated, setIsLetterGenerated] = useState(false);
     const [userMessage, setUserMessage] = useState("");
     const { contract } = useContract();
-    const { metaMask } = useWalletContext();
+    const { metaMask, connectToMetaMask } = useWalletContext();
 
     const [form] = Form.useForm<GenerateFormValues>();
 
@@ -142,6 +142,8 @@ export function useGenerateLetter(): UseLetterResult {
     }, [form, generatedContent, metaMask?.selectedAddress]);
 
     const triggerPayFee = useCallback(async () => {
+        if(!metaMask?.isConnected) {
+            await connectToMetaMask();
         try {
             setUserMessage("Paying fee...");
 
@@ -160,11 +162,13 @@ export function useGenerateLetter(): UseLetterResult {
             console.log(`Transaction hash: ${receipt.transactionHash}`);
 
         } catch (error) {
-            console.error("Error storing the letter:", error);
-            message.error(`Failed to store the letter: ${error.message}`);
-            setUserMessage("Failed to store the letter. Please try again.");
+            console.error("Error while paying fee:", error);
+            message.error(`Error while paying fee: ${error.message}`);
+            setUserMessage("Error while paying fee. Please try again.");
         }
-    }, [contract, sendLetter]);
+    }
+
+    }, [connectToMetaMask, contract, metaMask?.isConnected, sendLetter]);
 
     const handleSubmit = useCallback(
         async (values: GenerateFormValues) => {
