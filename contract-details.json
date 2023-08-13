@@ -1,0 +1,72 @@
+{
+  "CONTRACT_NAME": "LetterFeeCollector",
+  "CONTRACT_ADDRESS": "0x1cCD0A4803C186Ad638021B6267d1a7c3fE2B2aD",
+  "DEPLOYER_ADDRESS": "0x4B5c98c04428Bf110f87992269C6414Bbe960178",
+  "ABI": [
+    {
+      "type": "constructor",
+      "payable": false,
+      "inputs": []
+    },
+    {
+      "type": "event",
+      "anonymous": false,
+      "name": "FeeReceived",
+      "inputs": [
+        {
+          "type": "address",
+          "name": "_from",
+          "indexed": true
+        },
+        {
+          "type": "uint256",
+          "name": "_timestamp",
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "LETTER_FEE",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [
+        {
+          "type": "uint256"
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "owner",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [
+        {
+          "type": "address"
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "payFee",
+      "constant": false,
+      "stateMutability": "payable",
+      "payable": true,
+      "inputs": [],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "withdraw",
+      "constant": false,
+      "payable": false,
+      "inputs": [],
+      "outputs": []
+    }
+  ]
+}

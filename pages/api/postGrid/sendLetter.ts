@@ -1,20 +1,19 @@
 import { NextApiRequest, NextApiResponse } from "next";
-
 interface IContact {
-    firstName: string,
-    lastName: string,
-    addressLine1: string,
-    addressLine2: string,
-    city: string,
-    provinceOrState: string,
-    postalOrZip: string,
+    firstName: string;
+    lastName: string;
+    addressLine1: string;
+    addressLine2?: string;
+    city: string;
+    provinceOrState: string;
+    postalOrZip: string;
 }
-
 interface IRequestBody {
     to: IContact;
     from: IContact;
     description: string;
     content: string;
+    walletAddress: string;
 }
 
 export default async function sendLetter(
@@ -22,10 +21,11 @@ export default async function sendLetter(
     response: NextApiResponse
 ): Promise<void> {
     try {
-        const { to, from, description, content } = request.body as IRequestBody;
+        const { to, from, description, content, walletAddress } = request.body as IRequestBody;
         const rightNow = new Date().toDateString();
 
-        const options = {
+        // Sending the letter
+        const sendOptions = {
             method: 'POST',
             headers: {
                 accept: 'application/json',
@@ -41,18 +41,23 @@ export default async function sendLetter(
                 mergeVariables: {
                     "content": content,
                     "date": rightNow
+                },
+                metadata: {
+                    "walletAddress": walletAddress
                 }
             }),
         };
 
-        const res = await fetch('https://api.postgrid.com/print-mail/v1/letters', options);
-        const data = await res.json();
-        if (!res.ok) {
+        const sendRes = await fetch('https://api.postgrid.com/print-mail/v1/letters', sendOptions);
+        const sendData = await sendRes.json();
+        if (!sendRes.ok) {
             throw new Error('Error sending letter');
         }
-        response.status(200).json(data);
+
+        response.status(200).json(sendData);
+
     } catch (error) {
-        console.log(error)
+        console.log(error);
         response.status(500).json({ error: 'Internal server error', message: error.message });
     }
 }

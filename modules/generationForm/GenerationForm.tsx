@@ -5,17 +5,19 @@ import * as Styled from "./GenerationForm.styled";
 
 const GenerationForm = () => {
 
-  const { generatedContent, handleChange, handleSubmit, form, sendLetter, isGenerating, isLetterGenerated } = useGenerateLetter();
+  const { generatedContent, handleChange, handleSubmit, form, sendLetter, isGenerating, isLetterGenerated, userMessage } = useGenerateLetter();
 
   return (
     <Styled.MainContainer>
       <Styled.FormContainer>
+      <Styled.UserMessage>{userMessage}</Styled.UserMessage>
         <Styled.Form
           form={form}
           onValuesChange={handleChange}
           onFinish={handleSubmit}
         >
           <Styled.FormItem
+           label="Sender Name"
             name="senderName"
             rules={[{ required: true, message: "Please input sender name!" }]}
           >
@@ -23,6 +25,7 @@ const GenerationForm = () => {
           </Styled.FormItem>
 
           <Styled.FormItem
+            label="Sender Address"
             name="senderAddress"
             rules={[{ required: true, message: "Please input sender address!" }]}
           >
@@ -30,6 +33,7 @@ const GenerationForm = () => {
           </Styled.FormItem>
 
           <Styled.FormItem
+            label="Receiver Name"
             name="receiverName"
             rules={[{ required: true, message: "Please input receiver name!" }]}
           >
@@ -37,6 +41,7 @@ const GenerationForm = () => {
           </Styled.FormItem>
 
           <Styled.FormItem
+            label="Receiver Address"
             name="receiverAddress"
             rules={[{ required: true, message: "Please input receiver address!" }]}
           >
@@ -44,6 +49,7 @@ const GenerationForm = () => {
           </Styled.FormItem>
 
           <Styled.FormItem
+            label="Subject"
             name="subject"
             rules={[{ required: true, message: "Please input letter subject!" }]}
           >
