@@ -115,7 +115,8 @@ export function useGenerateLetter(): UseLetterResult {
                 throw new Error(errorData.message || 'Error sending letter');
             }
 
-            await response.json();
+            const data = await response.json();
+            console.log(data);
             message.success('Letter sent successfully!');
             setGeneratedContent("");
             setIsLetterGenerated(false);
