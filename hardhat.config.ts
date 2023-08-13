@@ -3,7 +3,7 @@ import "@nomicfoundation/hardhat-toolbox";
 require('dotenv').config();
 
 const config: HardhatUserConfig = {
-  defaultNetwork: 'ganache',
+  defaultNetwork: 'mode',
   solidity: "0.8.17",
   networks: {
     mode: {
